@@ -19,8 +19,18 @@ Vue.component('kanban-card', {
             <div class="date">Created: {{ card.createdAt }}</div>
             <div class="date">Deadline: {{ card.deadline }}</div>
             <div v-if="card.lastEdited" class="date">Edited: {{ card.lastEdited }}</div>
+            <div v-if="card.columnId === 4" :class="['deadline', isOverdue(card) ? 'ocerdue' : 'ontime']">
+                {{ isOverdue(card) ? 'Просрочено' : 'Выполнено в срок' }}
+            </div>
         </div>
     `,
+    methods: {
+        isOverdue(card) {
+            let today = new Date()
+            let deadline = new Date(card.deadline)
+            return deadline < today
+        }
+    }
 })
 
 Vue.component('kanban-column', {
