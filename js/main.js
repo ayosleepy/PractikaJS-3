@@ -151,5 +151,19 @@ let app = new Vue({
                 card.returnReason = reason
             }
         },
+    },
+    watch: {
+        cards: {
+            handler() {
+                localStorage.setItem('kanban', JSON.stringify(this.cards))
+            },
+            deep: true
+        }
+    },
+    mounted() {
+        let saved = localStorage.getItem('kanban')
+        if (saved) {
+            this.cards = JSON.parse(saved)
+        }
     }
 })
