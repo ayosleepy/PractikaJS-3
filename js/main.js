@@ -34,7 +34,7 @@ Vue.component('kanban-column', {
                     @delete-card="$emit('delete-card', card)">
                 </kanban-card>
             </div>
-            <button v-if="column.id === 1" @click=$emit('add-card')">+ Add card</button>
+            <button v-if="column.id === 1" @click="$emit('add-card')">+ Add card</button>
         </div>
     `,
 })
@@ -62,7 +62,49 @@ let app = new Vue({
     },
     methods: {
         getCardsByColumn(columnId) {
-            return this.card.filter(card => card.columnId === columnId)
+            return this.cards.filter(card => card.columnId === columnId)
+        },
+        addCard() {
+            let title = prompt('Введите заголовок задачи:')
+            if (!title) return
+
+            let description = prompt('Введите описание задачи:')
+            if (!description) return
+
+            let deadline = prompt('Введите дедлайн (ГГГГ-ММ-ДД):')
+            if (!deadline) return
+
+            let newCard = {
+                id: Date.now(),
+                columnId: 1,
+                title: title,
+                description: description,
+                createdAt: new Date().toLocaleDateString(),
+                deadline: deadline,
+                lastEdited: null
+            }
+            
+            this.cards.push(newCard)
+        },
+        editCard(card) {
+            let newTitle = prompt('Изменить заголовок:', card.title)
+            if (newTitle) card.title = newTitle
+
+            let newDescription = prompt('Изменить описание:', card.description)
+            if (newDescription) card.description = newDescription
+
+            let newDeadline = prompt('Изменить дедлайн (ГГГГ-ММ-ДД):', card.deadline)
+            if (newDeadline) card.deadline = newDeadline
+
+            card.lastEdited = new Date().toLocaleString()
+        },
+        deleteCard(card) {
+            if (confirm('Удалить задачу?')) {
+                let index = this.cards.findIndex(c => c.id === card.id)
+                if (index !== -1) {
+                    this.cards.splice(index, 1)
+                }
+            }
         }
     }
 })
