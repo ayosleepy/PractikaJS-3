@@ -68,3 +68,19 @@ body {
     color: #666;
     margin-top: 5px;
 }
+
+.deadline {
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 3px;
+}
+
+.deadline.overdue {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.deadline.ontime {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
