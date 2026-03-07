@@ -9,3 +9,23 @@ body {
     display: flex;
     gap: 20px;
 }
+
+.column {
+    background: #e6e6e6;
+    padding: 15px;
+    width: 25%;
+    border: 2px solid #b3b3b3;
+}
+
+.column h2 {
+    font-size: 18px;
+    margin-top: 0;
+    background: #d9d9d9;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #bfbfbf;
+}
+
+.cards {
+    min-height: 400px;
+}
