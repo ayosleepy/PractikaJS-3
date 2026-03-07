@@ -7,6 +7,12 @@ Vue.component('kanban-card', {
                 <div class="card-actions">
                     <button @click="$emit('edit-card', card)">E</button>
                     <button v-if="card.columnId === 1" @click="$emit('delete-card', card)">X</button>
+                    <button v-if="card.columnId === 1" @click="$emit('move-card', card, 2)">R</button>
+                    <button v-if="card.columnId === 2" @click="$emit('move-card', card, 3)">R</button>
+                    <button v-if="card.columnId === 3">
+                        <button @click="$emit('move-card', card, 4)">R</button>
+                        <button @click="$emit('move-card', card, 2)">L</button>
+                    </button>
                 </div>
             </div>
             <p>{{ card.description }}</p>
@@ -31,7 +37,8 @@ Vue.component('kanban-column', {
                     :key="card.id"
                     :card="card"
                     @edit-card="$emit('edit-card', card)"
-                    @delete-card="$emit('delete-card', card)">
+                    @delete-card="$emit('delete-card', card)"
+                    @move-card="$emit('move-card', card, $event)">
                 </kanban-card>
             </div>
             <button v-if="column.id === 1" @click="$emit('add-card')">+ Add card</button>
@@ -105,6 +112,10 @@ let app = new Vue({
                     this.cards.splice(index, 1)
                 }
             }
-        }
+        },
+        moveCard(card, targetColumnId) {
+            card.columnId = targetColumnId
+            card.lastEdited = new Date().toLocaleString()
+        },
     }
 })
