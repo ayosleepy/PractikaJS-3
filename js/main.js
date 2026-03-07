@@ -17,6 +17,28 @@ Vue.component('kanban-card', {
     `,
 })
 
+Vue.component('kanban-column', {
+    props: {
+        column: Object,
+        cards: Array
+    },
+    template: `
+        <div class="column">
+            <h2>{{ column.title }}</h2>
+            <div class="cards">
+                <kanban-card
+                    v-for="card in cards"
+                    :key="card.id"
+                    :card="card"
+                    @edit-card="$emit('edit-card', card)"
+                    @delete-card="$emit('delete-card', card)">
+                </kanban-card>
+            </div>
+            <button v-if="column.id === 1" @click=$emit('add-card')">+ Add card</button>
+        </div>
+    `,
+})
+
 let app = new Vue({
     el: '#app',
     data: {
