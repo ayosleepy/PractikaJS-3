@@ -1,5 +1,11 @@
 Vue.component('kanban-card', {
     props: ['card'],
+    data() {
+        return {
+            showReturnReason: false,
+            returnReason: ''
+        }
+    },
     template: `
         <div class="card">
             <div class="card-header">
@@ -9,18 +15,26 @@ Vue.component('kanban-card', {
                     <button v-if="card.columnId === 1" @click="$emit('delete-card', card)">X</button>
                     <button v-if="card.columnId === 1" @click="$emit('move-card', card, 2)">R</button>
                     <button v-if="card.columnId === 2" @click="$emit('move-card', card, 3)">R</button>
-                    <button v-if="card.columnId === 3">
-                        <button @click="$emit('move-card', card, 4)">R</button>
-                        <button @click="$emit('move-card', card, 2)">L</button>
-                    </button>
+                    <button v-if="card.columnId === 3" @click="$emit('move-card', card, 4)">R</button>
+                    <button v-if="card.columnId === 3" @click="showReturnReason = true">L</button>
                 </div>
             </div>
+        
+            <div v-if="showReturnReason" style="margin-top: 10px; padding: 10px; background: #f5f5f5;">
+                <input v-model="returnReason" placeholder="Причина возврата" style="width: 100%; margin-bottom: 5px; padding: 5px;">
+                <button @click="confirmReturn(card)">Подтвердить</button>
+                <button @click="showReturnReason = false">Отмена</button>
+            </div>
+
             <p>{{ card.description }}</p>
             <div class="date">Created: {{ card.createdAt }}</div>
             <div class="date">Deadline: {{ card.deadline }}</div>
             <div v-if="card.lastEdited" class="date">Edited: {{ card.lastEdited }}</div>
             <div v-if="card.columnId === 4" :class="['deadline', isOverdue(card) ? 'ocerdue' : 'ontime']">
                 {{ isOverdue(card) ? 'Просрочено' : 'Выполнено в срок' }}
+            </div>
+            <div v-if="card.returnReason" class="date">
+                Причина возврата: {{ card.returnReason }}
             </div>
         </div>
     `,
@@ -29,6 +43,13 @@ Vue.component('kanban-card', {
             let today = new Date()
             let deadline = new Date(card.deadline)
             return deadline < today
+        },
+        confirmReturn(card) {
+            if (this.returnReason) {
+                this.$emit('move-card', card, 2, this.returnReason)
+                this.showReturnReason = false
+                this.returnReason = ''
+            }
         }
     }
 })
@@ -123,9 +144,12 @@ let app = new Vue({
                 }
             }
         },
-        moveCard(card, targetColumnId) {
+        moveCard(card, targetColumnId, reason = null) {
             card.columnId = targetColumnId
             card.lastEdited = new Date().toLocaleString()
+            if (reason) {
+                card.returnReason = reason
+            }
         },
     }
 })
