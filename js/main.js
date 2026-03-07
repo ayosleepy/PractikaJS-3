@@ -7,7 +7,7 @@ Vue.component('kanban-card', {
         }
     },
     template: `
-        <div class="card">
+        <div class="card" :style="{ backgroundColor: card.color || 'white' }">
             <div class="card-header">
                 <h3>{{ card.title }}</h3>
                 <div class="card-actions">
@@ -17,6 +17,7 @@ Vue.component('kanban-card', {
                     <button v-if="card.columnId === 2" @click="$emit('move-card', card, 3)">R</button>
                     <button v-if="card.columnId === 3" @click="$emit('move-card', card, 4)">R</button>
                     <button v-if="card.columnId === 3" @click="showReturnReason = true">L</button>
+                    <button @click="$emit('change-color', card)">C</button>
                 </div>
             </div>
         
@@ -69,7 +70,8 @@ Vue.component('kanban-column', {
                     :card="card"
                     @edit-card="$emit('edit-card', card)"
                     @delete-card="$emit('delete-card', card)"
-                    @move-card="$emit('move-card', card, $event)">
+                    @move-card="$emit('move-card', card, $event)"
+                    @change-color="$emit('change-color', card)">
                 </kanban-card>
             </div>
             <button v-if="column.id === 1" @click="$emit('add-card')">+ Add card</button>
@@ -119,7 +121,8 @@ let app = new Vue({
                 description: description,
                 createdAt: new Date().toLocaleDateString(),
                 deadline: deadline,
-                lastEdited: null
+                lastEdited: null,
+                color: '#ffffff'
             }
             
             this.cards.push(newCard)
@@ -151,6 +154,13 @@ let app = new Vue({
                 card.returnReason = reason
             }
         },
+        changeCardColor(card) {
+            if (card.color === '#ffcccc') {
+                card.color = '#ffffff'
+            } else {
+                card.color = '#ffcccc'
+            }
+        }
     },
     watch: {
         cards: {
