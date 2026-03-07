@@ -29,3 +29,42 @@ body {
 .cards {
     min-height: 400px;
 }
+
+.card {
+    background: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #a6a6a6;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.card-actions button {
+    background: #e0e0e0;
+    border: 1px solid #808080;
+    margin-left: 5px;
+    cursor: pointer;
+    padding: 2px 8px;
+    color: #000;
+}
+
+.card p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.card .date {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
