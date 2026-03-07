@@ -48,6 +48,21 @@ let app = new Vue({
             { id: 3, title: 'Тестирование' },
             { id: 4, title: 'Выполненные задачи' }
         ],
-        cards: []
+        cards: [
+            {
+                id: 1,
+                columnId: 1,
+                title: 'Тестовая задача',
+                description: 'Описание задачи',
+                createdAt: new Date().toLocaleDateString(),
+                deadline: '2026-03-15',
+                lastEdited: null
+            }
+        ],
+    },
+    methods: {
+        getCardsByColumn(columnId) {
+            return this.card.filter(card => card.columnId === columnId)
+        }
     }
 })
