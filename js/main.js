@@ -7,7 +7,7 @@ Vue.component('kanban-card', {
         }
     },
     template: `
-        <div class="card" :style="{ backgroundColor: card.color || 'white' }">
+        <div class="card" :style="{ backgroundColor: card.color }">
             <div class="card-header">
                 <h3>{{ card.title }}</h3>
                 <div class="card-actions">
@@ -70,7 +70,7 @@ Vue.component('kanban-column', {
                     :card="card"
                     @edit-card="$emit('edit-card', card)"
                     @delete-card="$emit('delete-card', card)"
-                    @move-card="$emit('move-card', card, $event)"
+                    @move-card="(card, target) => $emit('move-card', card, target)"
                     @change-color="$emit('change-color', card)">
                 </kanban-card>
             </div>
@@ -96,7 +96,8 @@ let app = new Vue({
                 description: 'Описание задачи',
                 createdAt: new Date().toLocaleDateString(),
                 deadline: '2026-03-15',
-                lastEdited: null
+                lastEdited: null,
+                color: '#ffffff'
             }
         ],
     },
@@ -155,11 +156,7 @@ let app = new Vue({
             }
         },
         changeCardColor(card) {
-            if (card.color === '#ffcccc') {
-                card.color = '#ffffff'
-            } else {
-                card.color = '#ffcccc'
-            }
+            this.$set(card, 'color', card.color === '#ffcccc' ? '#ffffff' : '#ffcccc')
         }
     },
     watch: {
