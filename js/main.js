@@ -1,3 +1,55 @@
+Vue.component('add-task-form', {
+    data() {
+        return {
+            title: '',
+            description: '',
+            deadline: ''
+        }
+    },
+    template: `
+        <div class="add-form">
+            <h3>New Task</h3>
+            <p>
+                <label>Title:</label>
+                <input v-model="title" placeholder="Enter title">
+            </p>
+            <p>
+                <label>Description:</label>
+                <textarea v-model="description" placeholder="Enter description"></textarea>
+            </p>
+            <p>
+                <label>Deadline:</label>
+                <input type="date" v-model="deadline">
+            </p>
+            <button @click="addTask">Add Task</button>
+        </div>
+    `,
+    methods: {
+        addTask() {
+            if (!this.title || !this.description || !this.deadline) {
+                alert('Please fill all fields')
+                return
+            }
+            
+            let newCard = {
+                id: Date.now(),
+                columnId: 1,
+                title: this.title,
+                description: this.description,
+                createdAt: new Date().toLocaleDateString(),
+                deadline: this.deadline,
+                lastEdited: null
+            }
+            
+            this.$emit('add-task', newCard)
+            
+            this.title = ''
+            this.description = ''
+            this.deadline = ''
+        }
+    }
+})
+
 Vue.component('kanban-card', {
     props: ['card'],
     data() {
@@ -12,7 +64,7 @@ Vue.component('kanban-card', {
                 <h3>{{ card.title }}</h3>
                 <div class="card-actions">
                     <button @click="$emit('edit-card', card)">E</button>
-                    <button v-if="card.columnId === 1" @click="$emit('delete-card', card)">X</button>
+                    <button @click="$emit('delete-card', card)">X</button>
                     <button v-if="card.columnId === 1" @click="$emit('move-card', card, 2)">R</button>
                     <button v-if="card.columnId === 2" @click="$emit('move-card', card, 3)">R</button>
                     <button v-if="card.columnId === 3" @click="$emit('move-card', card, 4)">R</button>
@@ -72,7 +124,6 @@ Vue.component('kanban-column', {
                     @move-card="(card, target) => $emit('move-card', card, target)">
                 </kanban-card>
             </div>
-            <button v-if="column.id === 1" @click="$emit('add-card')">+ Add card</button>
         </div>
     `,
 })
@@ -86,44 +137,11 @@ let app = new Vue({
             { id: 3, title: 'Тестирование' },
             { id: 4, title: 'Выполненные задачи' }
         ],
-        cards: [
-            {
-                id: 1,
-                columnId: 1,
-                title: 'Тестовая задача',
-                description: 'Описание задачи',
-                createdAt: new Date().toLocaleDateString(),
-                deadline: '2026-03-15',
-                lastEdited: null,
-                color: '#ffffff'
-            }
-        ],
+        cards: [],
     },
     methods: {
         getCardsByColumn(columnId) {
             return this.cards.filter(card => card.columnId === columnId)
-        },
-        addCard() {
-            let title = prompt('Введите заголовок задачи:')
-            if (!title) return
-
-            let description = prompt('Введите описание задачи:')
-            if (!description) return
-
-            let deadline = prompt('Введите дедлайн (ГГГГ-ММ-ДД):')
-            if (!deadline) return
-
-            let newCard = {
-                id: Date.now(),
-                columnId: 1,
-                title: title,
-                description: description,
-                createdAt: new Date().toLocaleDateString(),
-                deadline: deadline,
-                lastEdited: null,
-            }
-            
-            this.cards.push(newCard)
         },
         editCard(card) {
             let newTitle = prompt('Изменить заголовок:', card.title)
@@ -152,6 +170,9 @@ let app = new Vue({
                 card.returnReason = reason
             }
         },
+        addTaskFromForm(newCard) {
+            this.cards.push(newCard)
+        }
     },
     watch: {
         cards: {
